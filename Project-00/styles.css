@@ -1,0 +1,28 @@
+#google-img{
+    height:200px;
+}
+
+.row{
+    min-height: 80vh;
+}
+
+.links{
+    text-decoration: none;
+    margin-right: 20px;
+}
+
+.form-rounded{
+    border-radius: 50px;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0);
+}
+
+#form-advanced{
+    display: grid;
+    grid-template-columns: auto auto auto;
+    width: 50%;
+}
+
+.from-to{
+    display: grid;
+    grid-template-columns: auto auto auto;
+}
