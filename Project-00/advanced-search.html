@@ -8,6 +8,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link href = "https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="./styles.css">
     </head>
     <body>
@@ -15,38 +18,18 @@
             <h4>Advanced Search</h4>
             <hr>
 
-            <h6>Find pages with...</h6>
-
-            <!--
-            <form class = "" action = "">
-                
-                
-                <label for = "as_q" >all these words:</label>
-                <input class = "form-control" type = "text" name = "as_q">
-                <p>test</p>
-
-                <label for = "as_epq">this exact word or phrase:</label>
-                <input type = "text" name = "as_epq">
-                <p>test</p>
-
-                <label for = "as_oq">any of these words:</label>
-                <input type = "text" name = "as_oq">
-                <p>test</p>
-
-                <label for = "as_eq">none of these words:</label>
-                <input type = "text" name = "as_eq">
-                <p>test</p>
-
-                <label>numbers ranging from: </label>
-                <div class ="from-to">
-                    <input type = "text">
-                    <p>to</p>
-                    <input type = "text">
-                    <p>test</p>
+            <div class = "row">
+                <div class = "col-5">
+                    <h6>Find pages with...</h6>
                 </div>
-                <p></p>
-                <button type = "submit" class = "btn btn-primary">Search</button>
-            </form>-->
+                <div class = "col">
+                    To do this in the search box:
+                </div>
+                <div class = "col">
+                    
+                </div>
+            </div>
+            
 
             <form action = "https://google.com/search">
 
@@ -55,9 +38,14 @@
                     <div class = "col-sm-3">
                         <input class = "form-control" type = "text" name = "as_q">
                     </div>
-                    <!--<div class = "col-sm-1">
-                        <p class = "col-form-label">Hello</p>
-                    </div>-->
+                    <div class = "col-sm-auto">
+                        <p class = "col-form-label">
+                            <small class = "text-muted">
+                                Type the important words:
+                            </small>
+                            <span class = "important-words">tricolor rat terrier</span>
+                        </p>
+                    </div>
                 </div>
                 
                 <div class = "row mb-2">
@@ -65,9 +53,14 @@
                     <div class = "col-sm-3">
                         <input class = "form-control" type = "text" name = "as_epq">
                     </div>
-                    <!--<div class = "col-sm-1">
-                        <p class = "col-form-label">Hello</p>
-                    </div>-->
+                    <div class = "col-sm-auto">
+                        <p class = "col-form-label">
+                            <small class = "text-muted">
+                                Put the exact words in quotes: 
+                            </small>
+                            <span class = "important-words">"rat terrier"</span>
+                        </p>
+                    </div>
                 </div>
 
                 <div class = "row mb-2">
@@ -75,9 +68,14 @@
                     <div class = "col-sm-3">
                         <input class = "form-control" type = "text" name = "as_oq">
                     </div>
-                    <!--<div class = "col-sm-1">
-                        <p class = "col-form-label">Hello</p>
-                    </div>-->
+                    <div class = "col-sm-auto">
+                        <p class = "col-form-label">
+                            <small class = "text-muted">
+                                Type OR between all the words you want:
+                            </small>
+                            <span class = "important-words">miniature OR standard</span>
+                        </p>
+                    </div>
                 </div>
 
                 <div class = "row mb-2">
@@ -85,9 +83,14 @@
                     <div class = "col-sm-3">
                         <input class = "form-control" type = "text" name = "as_eq">
                     </div>
-                    <!--<div class = "col-sm-1">
-                        <p class = "col-form-label">Hello</p>
-                    </div>-->
+                    <div class = "col-sm-auto">
+                        <p class = "col-form-label">
+                            <small class = "text-muted">
+                                Put a minus sign just before the words you don't want:
+                            </small>
+                            <span class = "important-words">-rodent, -"Jack Russell"</span>
+                        </p>
+                    </div>
                 </div>
 
                 <div class = "row mb-2">
@@ -101,12 +104,18 @@
                     <div class = "col-sm-1">
                         <input class = "form-control" type = "number" name = "as_nhi">
                     </div>
-                    <!--<div class = "col-sm-1">
-                        <p class = "col-form-label">Hello</p>
-                    </div>-->
+                    <div class = "col-sm-auto">
+                        <p class = "col-form-label">
+                            <small class = "text-muted">
+                                Put 2 periods between the numbers and add a unit of measure:
+                            </small>
+                            <span class = "important-words">10..35 lb, $300..$500, 2010..2011</span>
+                        </p>
+                    </div>
                 </div>
 
                 <hr>
+                
                 <button type = "submit" class = "btn btn-primary">Search</button>
             </form>
 
