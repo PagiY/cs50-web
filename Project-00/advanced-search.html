@@ -17,7 +17,8 @@
 
             <h6>Find pages with...</h6>
 
-            <form id = "form-advanced" class = "" action = "">
+            <!--
+            <form class = "" action = "">
                 
                 
                 <label for = "as_q" >all these words:</label>
@@ -45,12 +46,70 @@
                 </div>
                 <p></p>
                 <button type = "submit" class = "btn btn-primary">Search</button>
+            </form>-->
+
+            <form action = "https://google.com/search">
+
+                <div class = "row mb-2">
+                    <label for = "as_q" class = "col-sm-2 col-form-label">all these words:</label>
+                    <div class = "col-sm-3">
+                        <input class = "form-control" type = "text" name = "as_q">
+                    </div>
+                    <!--<div class = "col-sm-1">
+                        <p class = "col-form-label">Hello</p>
+                    </div>-->
+                </div>
+                
+                <div class = "row mb-2">
+                    <label for = "as_epq" class = "col-sm-2 col-form-label">this exact word or phrase:</label>
+                    <div class = "col-sm-3">
+                        <input class = "form-control" type = "text" name = "as_epq">
+                    </div>
+                    <!--<div class = "col-sm-1">
+                        <p class = "col-form-label">Hello</p>
+                    </div>-->
+                </div>
+
+                <div class = "row mb-2">
+                    <label for = "as_oq" class = "col-sm-2 col-form-label">any of these words:</label>
+                    <div class = "col-sm-3">
+                        <input class = "form-control" type = "text" name = "as_oq">
+                    </div>
+                    <!--<div class = "col-sm-1">
+                        <p class = "col-form-label">Hello</p>
+                    </div>-->
+                </div>
+
+                <div class = "row mb-2">
+                    <label for = "as_eq" class = "col-sm-2 col-form-label">none of these words</label>
+                    <div class = "col-sm-3">
+                        <input class = "form-control" type = "text" name = "as_eq">
+                    </div>
+                    <!--<div class = "col-sm-1">
+                        <p class = "col-form-label">Hello</p>
+                    </div>-->
+                </div>
+
+                <div class = "row mb-2">
+                    <label for = ""  class = "col-sm-2 col-form-label">numbers ranging from:</label>
+                    <div class = "col-sm-1">
+                        <input class = "form-control" type = "number" name = "as_nlo">
+                    </div>
+                    <div class = "col-sm-1">
+                        <p class = "col-form-label">to</p>
+                    </div>
+                    <div class = "col-sm-1">
+                        <input class = "form-control" type = "number" name = "as_nhi">
+                    </div>
+                    <!--<div class = "col-sm-1">
+                        <p class = "col-form-label">Hello</p>
+                    </div>-->
+                </div>
+
+                <hr>
+                <button type = "submit" class = "btn btn-primary">Search</button>
             </form>
 
-            
-            
-        
-            
         </div>
 
         <script src="" async defer></script>
