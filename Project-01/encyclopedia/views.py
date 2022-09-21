@@ -62,7 +62,11 @@ def search(request):
     })
     
 def new_entry(request):
-    
+    """
+    For GET request, render an empty form.
+    For POST request, entry should not be existing in order to be saved. If not, 
+    then entry is not saved and a warning message is shown.
+    """
     if request.method == "POST":
         form = WikiEntry(request.POST)
         if form.is_valid():
@@ -70,9 +74,8 @@ def new_entry(request):
             content = form.cleaned_data["content"]
             
             if util.get_entry(title) is None:
-                print('entry does not exist')
                 util.save_entry(title, content)
-                return HttpResponseRedirect(f"wiki/{title}")
+                return HttpResponseRedirect(f"/wiki/{title}")
             else:
                 return render(request, "encyclopedia/new_entry.html", {
                     "form" : form,
@@ -83,6 +86,32 @@ def new_entry(request):
             
     form = WikiEntry()
     return render(request, "encyclopedia/new_entry.html", {
+        "form": form
+    })
+    
+def edit_entry(request, title):
+    """
+    For GET request, renders a populated form based on the wiki being edited.
+    For POST request, saves the edited entry.
+    """
+    if request.method == "POST":
+        form = WikiEntry(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            content = form.cleaned_data["content"]
+            
+            util.save_entry(title, content)
+            return HttpResponseRedirect(f"/wiki/{title}")
+            
+    
+    content = util.get_entry(title)
+
+    entry = {'title': title,'content': content}
+    
+    form = WikiEntry(initial = entry)
+    
+    return render(request, "encyclopedia/edit_entry.html", {
+        "title": title,
         "form": form
     })
 
