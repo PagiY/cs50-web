@@ -7,6 +7,7 @@ from . import util
 from .forms import WikiEntry
 
 import random 
+import markdown2 
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
@@ -27,7 +28,7 @@ def wiki(request, title):
     
     return render(request, "encyclopedia/wiki.html",{
         "title": title.capitalize(),
-        "content": entry
+        "content": markdown2.markdown(entry)
     })
     
 def search(request):
@@ -60,7 +61,7 @@ def search(request):
     
     return render(request, "encyclopedia/wiki.html", {
         "title": title.capitalize(),
-        "content": entry    
+        "content": markdown2.markdown(entry)    
     })
     
 def new_entry(request):

@@ -6,5 +6,5 @@
 
 {%block body%}
     <a href = "{% url 'edit_entry' title%}">Edit this Wiki</a>
-    {{content}}
+    {{content | safe}}
 {%endblock%}
