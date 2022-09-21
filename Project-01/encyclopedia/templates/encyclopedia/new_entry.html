@@ -1,0 +1,25 @@
+{%extends "encyclopedia/layout.html"%}
+
+{%block title%}
+    New wiki entry
+{%endblock%}
+
+{%block body%}
+    <h2>Enter a new wiki entry!</h2>
+        <form action = "{% url "new_entry"%}" method = "post">
+            {% csrf_token %}
+            {% if success == "false" %}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    Wiki entry already exists!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
+
+            {{form}}
+
+            <button class = "mt-2 btn btn-primary" type = "submit">Submit</button>
+        </form>
+        
+   
+    
+{%endblock%}
