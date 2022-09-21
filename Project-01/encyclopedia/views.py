@@ -6,6 +6,8 @@ from django.contrib import messages
 from . import util
 from .forms import WikiEntry
 
+import random 
+
 def index(request):
     return render(request, "encyclopedia/index.html", {
         "entries": util.list_entries()
@@ -62,11 +64,13 @@ def search(request):
     })
     
 def new_entry(request):
+    
     """
     For GET request, render an empty form.
     For POST request, entry should not be existing in order to be saved. If not, 
     then entry is not saved and a warning message is shown.
     """
+    
     if request.method == "POST":
         form = WikiEntry(request.POST)
         if form.is_valid():
@@ -81,8 +85,6 @@ def new_entry(request):
                     "form" : form,
                     "success": "false"
                 })
-                
-                
             
     form = WikiEntry()
     return render(request, "encyclopedia/new_entry.html", {
@@ -90,10 +92,12 @@ def new_entry(request):
     })
     
 def edit_entry(request, title):
+    
     """
     For GET request, renders a populated form based on the wiki being edited.
     For POST request, saves the edited entry.
     """
+    
     if request.method == "POST":
         form = WikiEntry(request.POST)
         if form.is_valid():
@@ -115,3 +119,15 @@ def edit_entry(request, title):
         "form": form
     })
 
+
+def random_entry(request):
+    
+    """
+    Gets a random entry from the list of all wiki entries.
+    """
+    
+    entries = util.list_entries()
+    
+    title = random.choice(entries)
+    
+    return HttpResponseRedirect(f"/wiki/{title}")
