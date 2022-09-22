@@ -3,5 +3,18 @@
 {% block body %}
     <h2>Active Listings</h2>
 
-    TODO
+    <ul>
+        {%for auction in auction_listings%}
+        
+            {% if auction.status == True %}
+            <li>
+                <a href = "">
+                    {{auction.title}}
+                </a>
+            </li>
+            {% endif %}
+
+        {%endfor%}
+    </ul>
+    
 {% endblock %}
