@@ -1,7 +1,5 @@
 from django import forms 
-from auctions.models import List 
-
-CATEGORIES = [ ('test', 'Test') ]
+from auctions.models import List, CATEGORIES
 
 class ListForm(forms.ModelForm):
     class Meta:

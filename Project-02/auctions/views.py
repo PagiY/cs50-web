@@ -4,12 +4,15 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User
+from .models import User, List
 from .forms import ListForm
 
-def index(request):
-    return render(request, "auctions/index.html")
 
+def index(request):
+    auction_listings = List.objects.all()
+    return render(request, "auctions/index.html", {
+        "auction_listings":auction_listings
+    })
 
 def login_view(request):
     if request.method == "POST":
@@ -30,11 +33,9 @@ def login_view(request):
     else:
         return render(request, "auctions/login.html")
 
-
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
-
 
 def register(request):
     if request.method == "POST":
@@ -63,6 +64,22 @@ def register(request):
         return render(request, "auctions/register.html")
 
 def new_listing(request):
+    if request.method == "POST":
+        form = ListForm(request.POST)
+        if form.is_valid():
+            title           = form.cleaned_data["title"]
+            description     = form.cleaned_data["description"]
+            starting_price  = form.cleaned_data["starting_price"]
+            category        = form.cleaned_data["category"]
+            user            = request.user
+            
+            listing = List(title = title, 
+                           description = description, 
+                           starting_price = starting_price,
+                           category = category,
+                           user = user)
+            listing.save()
+
     return render(request, "auctions/new_listing.html", {
         "form": ListForm()
     })
