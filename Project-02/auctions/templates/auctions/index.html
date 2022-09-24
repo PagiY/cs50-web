@@ -3,18 +3,21 @@
 {% block body %}
     <h2>Active Listings</h2>
 
-    <ul>
-        {%for auction in auction_listings%}
-        
-            {% if auction.status == True %}
-            <li>
-                <a href = "">
-                    {{auction.title}}
-                </a>
-            </li>
-            {% endif %}
 
+    <div class = "card-group">
+        {%for auction in auction_listings%}
+            {%if auction.status == True%}
+                <div class = "card">
+                    <img src = "{{auction.img_url}}" class = "card-img-top" alt = "{{auction.title}}" width = '100' height = '300'>
+                    <div class = "card-body">
+                        <h5 class = "card-title">{{ auction.title }}</h5>
+                        <p class = "card-text">{{ auction.description }}</p>
+                        <a href = "{% url 'show_listing'%}"> Show Auction</a>
+                    </div>
+                </div>
+            {%endif%}
         {%endfor%}
-    </ul>
+        
+    </div>
     
 {% endblock %}
