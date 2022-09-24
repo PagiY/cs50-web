@@ -14,6 +14,7 @@ class User(AbstractUser):
 class List(models.Model):
     title           = models.CharField(max_length = 64)
     description     = models.CharField(max_length = 1000)
+    img_url         = models.CharField(max_length = 128, default = '')
     starting_price  = models.FloatField()
     category        = models.CharField(max_length = 64, choices = CATEGORIES)
     user            = models.ForeignKey(User, on_delete = models.CASCADE)

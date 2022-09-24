@@ -4,11 +4,12 @@ from auctions.models import List, CATEGORIES
 class ListForm(forms.ModelForm):
     class Meta:
         model = List
-        fields = ['title', 'description', 'starting_price', 'category']
+        fields = ['title', 'description', 'img_url', 'starting_price', 'category']
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control'}),
-            'description': forms.Textarea(attrs={'class': 'form-control'}),
-            'starting_price': forms.NumberInput(attrs = {'class': 'form-control'}),
-            'category': forms.Select(choices = CATEGORIES, attrs = {'class': 'form-control'})   
+            'title'             : forms.TextInput(attrs={'class': 'form-control'}),
+            'description'       : forms.Textarea(attrs={'class': 'form-control'}),
+            'img_url'           : forms.TextInput(attrs = {'class': 'form-control'}),
+            'starting_price'    : forms.NumberInput(attrs = {'class': 'form-control'}),
+            'category'          : forms.Select(choices = CATEGORIES, attrs = {'class': 'form-control'})   
         }
             

@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -69,12 +70,14 @@ def new_listing(request):
         if form.is_valid():
             title           = form.cleaned_data["title"]
             description     = form.cleaned_data["description"]
+            img_url         = form.cleaned_data["img_url"]
             starting_price  = form.cleaned_data["starting_price"]
             category        = form.cleaned_data["category"]
             user            = request.user
             
             listing = List(title = title, 
                            description = description, 
+                           img_url = img_url,
                            starting_price = starting_price,
                            category = category,
                            user = user)
@@ -83,3 +86,8 @@ def new_listing(request):
     return render(request, "auctions/new_listing.html", {
         "form": ListForm()
     })
+
+@login_required(login_url = 'login')
+def show_listing(request):
+
+    return render(request, "auctions/show_listing.html")
