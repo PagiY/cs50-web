@@ -1,5 +1,5 @@
 from django import forms 
-from auctions.models import List, CATEGORIES
+from auctions.models import List, Bid, CATEGORIES
 
 class ListForm(forms.ModelForm):
     class Meta:
@@ -11,5 +11,13 @@ class ListForm(forms.ModelForm):
             'img_url'           : forms.TextInput(attrs = {'class': 'form-control'}),
             'starting_price'    : forms.NumberInput(attrs = {'class': 'form-control'}),
             'category'          : forms.Select(choices = CATEGORIES, attrs = {'class': 'form-control'})   
+        }
+        
+class BidForm(forms.ModelForm):
+    class Meta:
+        model = Bid 
+        fields = ['price']
+        widgets = {
+            'price'             : forms.TextInput(attrs={'class': 'form-control'})
         }
             
