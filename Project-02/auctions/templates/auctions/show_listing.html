@@ -2,6 +2,25 @@
 
 {%block body%}
 <div>
-   hi
+   <img src = "{{auction.img_url}}">
+   
+   {{auction.title}}
+
+   {{auction.description}}
+
+   {{auction.category}}
+
+   {{auction.user}}
+
+   
+   <a href = "">Add to watchlist</a>
+
+   {{bids.price}}
+
+   <form action = "">
+      {% csrf_token %}
+      {{bidform}}
+      <button class = "btn btn-primary" type = "submit">Make bid</button>
+   </form>
 </div>
 {%endblock%}

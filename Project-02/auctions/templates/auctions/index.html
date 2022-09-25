@@ -12,7 +12,7 @@
                     <div class = "card-body">
                         <h5 class = "card-title">{{ auction.title }}</h5>
                         <p class = "card-text">{{ auction.description }}</p>
-                        <a href = "{% url 'show_listing'%}"> Show Auction</a>
+                        <a href = "{% url 'show_listing' auction.id %}"> Show Auction</a>
                     </div>
                 </div>
             {%endif%}
