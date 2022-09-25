@@ -4,6 +4,8 @@
 <div>
    <img src = "{{auction.img_url}}">
    
+   <br>
+
    {{auction.title}}
 
    {{auction.description}}
@@ -12,12 +14,17 @@
 
    {{auction.user}}
 
-   
+   {{auction.starting_price}}
+
    <a href = "">Add to watchlist</a>
 
-   {{bids.price}}
+   <br>
+   
+   There are {{counts}} bid/s for this auction.
 
-   <form action = "">
+   ${{bids.price__max}}
+
+   <form action = "{% url 'make_bid' auction.id%}" method = "post">
       {% csrf_token %}
       {{bidform}}
       <button class = "btn btn-primary" type = "submit">Make bid</button>
