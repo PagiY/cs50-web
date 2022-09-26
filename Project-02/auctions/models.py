@@ -26,7 +26,7 @@ class List(models.Model):
 class Bid(models.Model):
     listing         = models.ForeignKey(List, on_delete = models.CASCADE)
     user            = models.ForeignKey(User, on_delete = models.CASCADE, default = None)
-    price           = models.DecimalField(decimal_places = 5, max_digits = 15, default = 0.00)
+    price           = models.DecimalField(decimal_places = 2, max_digits = 15, default = 0.00)
     
     def __str__(self):
         return f"{self.listing} {self.price} {self.user}" 

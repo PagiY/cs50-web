@@ -1,12 +1,13 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.db.models import Max
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, List
-from .forms import ListForm
+from .models import User, List, Bid
+from .forms import ListForm, BidForm
 
 
 def index(request):
@@ -88,6 +89,37 @@ def new_listing(request):
     })
 
 @login_required(login_url = 'login')
-def show_listing(request):
+def show_listing(request, auction_id):
+    auction     = List.objects.get(pk = auction_id)
+    max_bid     = Bid.objects.filter(listing = auction_id).aggregate(Max('price'))
+    counts      = Bid.objects.filter(listing = auction_id).count() 
+    
+    #get highest bid 
+    print(max_bid)
+    
+    return render(request, "auctions/show_listing.html", {
+        "auction"   : auction,
+        "counts"    : counts,
+        "bids"      : max_bid,
+        "bidform"   : BidForm()
+    })
 
-    return render(request, "auctions/show_listing.html")
+
+def add_watchlist(request, auction_id):
+    return
+
+def make_bid(request, auction_id):
+    
+    if request.method == "POST":
+        print(request.POST)
+        form = BidForm(request.POST)
+        
+    auction = List.objects.get(pk = auction_id)
+    bids    = List.objects.get(pk = auction_id)
+    
+    return render(request, "auctions/show_listing.html", {
+        "auction": auction,
+        "bids": bids,
+        "bidform": BidForm()
+    })
+    
