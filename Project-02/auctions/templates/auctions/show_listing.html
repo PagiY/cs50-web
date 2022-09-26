@@ -1,28 +1,31 @@
 {% extends "auctions/layout.html"%}
 
 {%block body%}
-<div>
+<div class = "container">
    <img src = "{{auction.img_url}}">
    
    <br>
-
-   {{auction.title}}
-
-   {{auction.description}}
-
-   {{auction.category}}
-
-   {{auction.user}}
-
-   {{auction.starting_price}}
-
    <a href = "">Add to watchlist</a>
 
-   <br>
+   <ul class = "list-group list-group-flush">
+      <li class = "list-group-item">{{auction.title}}</li>
+      <li class = "list-group-item">{{auction.description}}</li>
+      <li class = "list-group-item">{{auction.category}}</li>
+      <li class = "list-group-item">{{auction.user}}</li>
+      <li class = "list-group-item">Starting price: {{auction.starting_price}}</li>
+   </ul>
    
    There are {{counts}} bid/s for this auction.
+   <br>
+   Current price: ${{bids.price__max}}
 
-   ${{bids.price__max}}
+   {%if messages%}
+      <ul class="messages">
+         {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+         {% endfor %}
+      </ul>
+   {%endif%}
 
    <form action = "{% url 'make_bid' auction.id%}" method = "post">
       {% csrf_token %}
