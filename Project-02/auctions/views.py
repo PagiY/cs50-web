@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.db.models import Max
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -94,9 +95,6 @@ def show_listing(request, auction_id):
     max_bid     = Bid.objects.filter(listing = auction_id).aggregate(Max('price'))
     counts      = Bid.objects.filter(listing = auction_id).count() 
     
-    #get highest bid 
-    print(max_bid)
-    
     return render(request, "auctions/show_listing.html", {
         "auction"   : auction,
         "counts"    : counts,
@@ -111,15 +109,29 @@ def add_watchlist(request, auction_id):
 def make_bid(request, auction_id):
     
     if request.method == "POST":
-        print(request.POST)
         form = BidForm(request.POST)
+        if form.is_valid():
+            listing = List.objects.get(pk = auction_id)
+            price   = form.cleaned_data["price"]
+            user    = request.user
+            
+            max_bid     = Bid.objects.filter(listing = auction_id).aggregate(Max('price'))
+            
+            if max_bid["price__max"] is not None:
+                if (int(price) > int(max_bid["price__max"])):
+                    bid = Bid(listing = listing, user = user, price = price)
+                    bid.save()
+                    messages.add_message(request, messages.SUCCESS, 'Bid success!')
+                else:
+                    messages.add_message(request, messages.ERROR, 'Bid failed!')
+            else:
+                if (int(price) > int(listing.starting_price)):
+                    bid = Bid(listing = listing, user = user, price = price)
+                    bid.save()
+                    messages.add_message(request, messages.SUCCESS, 'Bid success!')
+                else:
+                    messages.add_message(request, messages.ERROR, 'Bid failed!')
+                
+            return HttpResponseRedirect(f"/show_listing/{auction_id}")
         
-    auction = List.objects.get(pk = auction_id)
-    bids    = List.objects.get(pk = auction_id)
-    
-    return render(request, "auctions/show_listing.html", {
-        "auction": auction,
-        "bids": bids,
-        "bidform": BidForm()
-    })
     
