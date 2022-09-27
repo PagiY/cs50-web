@@ -7,6 +7,10 @@
    <br>
    <a href = "">Add to watchlist</a>
 
+   {%if can_close%}
+      <a href = "{%url 'close_auction' auction.id%}">Close auction</a>
+   {%endif%}
+
    <ul class = "list-group list-group-flush">
       <li class = "list-group-item">{{auction.title}}</li>
       <li class = "list-group-item">{{auction.description}}</li>
