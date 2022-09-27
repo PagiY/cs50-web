@@ -95,8 +95,14 @@ def show_listing(request, auction_id):
     max_bid     = Bid.objects.filter(listing = auction_id).aggregate(Max('price'))
     counts      = Bid.objects.filter(listing = auction_id).count() 
     
+    if auction.user == request.user:
+        can_close = True 
+    else:
+        can_close = False
+    
     return render(request, "auctions/show_listing.html", {
         "auction"   : auction,
+        "can_close" : can_close,
         "counts"    : counts,
         "bids"      : max_bid,
         "bidform"   : BidForm()
@@ -134,4 +140,6 @@ def make_bid(request, auction_id):
                 
             return HttpResponseRedirect(f"/show_listing/{auction_id}")
         
-    
+
+def close_auction(request, auction_id):
+    return 
