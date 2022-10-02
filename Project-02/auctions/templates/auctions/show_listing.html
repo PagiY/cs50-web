@@ -8,7 +8,9 @@
    <a href = "">Add to watchlist</a>
 
    {%if can_close%}
-      <a href = "{%url 'close_auction' auction.id%}">Close auction</a>
+      {%if auction.status == True%}
+         <a href = "{%url 'close_auction' auction.id%}">Close auction</a>
+      {%endif%}
    {%endif%}
 
    <ul class = "list-group list-group-flush">
@@ -19,22 +21,24 @@
       <li class = "list-group-item">Starting price: {{auction.starting_price}}</li>
    </ul>
    
-   There are {{counts}} bid/s for this auction.
-   <br>
-   Current price: ${{bids.price__max}}
+   {% if auction.status == True%}
+      There are {{counts}} bid/s for this auction.
+      <br>
+      Current price: ${{bids.price__max}}
 
-   {%if messages%}
-      <ul class="messages">
-         {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-         {% endfor %}
-      </ul>
+      {%if messages%}
+         <ul class="messages">
+            {% for message in messages %}
+               <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+         </ul>
+      {%endif%}
+      
+         <form action = "{% url 'make_bid' auction.id%}" method = "post">
+            {% csrf_token %}
+            {{bidform}}
+            <button class = "btn btn-primary" type = "submit">Make bid</button>
+         </form>
    {%endif%}
-
-   <form action = "{% url 'make_bid' auction.id%}" method = "post">
-      {% csrf_token %}
-      {{bidform}}
-      <button class = "btn btn-primary" type = "submit">Make bid</button>
-   </form>
 </div>
 {%endblock%}
