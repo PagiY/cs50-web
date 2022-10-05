@@ -17,7 +17,8 @@ class List(models.Model):
     img_url         = models.CharField(max_length = 128, default = '')
     starting_price  = models.DecimalField(decimal_places = 5, max_digits = 15)
     category        = models.CharField(max_length = 64, choices = CATEGORIES)
-    user            = models.ForeignKey(User, on_delete = models.CASCADE) 
+    user            = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "poster") 
+    won_user        = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "winner", default = None, null = True, blank = True)
     status          = models.BooleanField(default = True)
     
     def __str__(self):

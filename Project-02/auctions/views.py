@@ -144,8 +144,9 @@ def make_bid(request, auction_id):
 def close_auction(request, auction_id):
     auction     = List.objects.get(pk = auction_id)
     auction.status = False 
+    max_bid     = Bid.objects.filter(listing = auction_id).annotate(max_value = Max('price')).order_by('-max_value')[0]
+    auction.won_user = max_bid.user 
     auction.save()
     
-    #max_bid     = Bid.objects.filter(listing = auction_id).aggregate(Max('price'))
-    #winning_price = List.objects.get()
+
     return HttpResponseRedirect(f"/show_listing/{auction_id}")
