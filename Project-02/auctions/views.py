@@ -95,14 +95,23 @@ def show_listing(request, auction_id):
     max_bid     = Bid.objects.filter(listing = auction_id).aggregate(Max('price'))
     counts      = Bid.objects.filter(listing = auction_id).count() 
     
+    #if the user is the one who posted this listing, then they have the ability to
+    #close the auction
     if auction.user == request.user:
         can_close = True 
     else:
         can_close = False
     
+    #if the user is the one who won this listing, then it should say they won the listing
+    if request.user == auction.won_user:
+        won_user = True
+    else:
+        won_user = False 
+        
     return render(request, "auctions/show_listing.html", {
         "auction"   : auction,
         "can_close" : can_close,
+        "won_user"  : won_user,
         "counts"    : counts,
         "bids"      : max_bid,
         "bidform"   : BidForm()
