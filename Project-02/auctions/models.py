@@ -11,11 +11,13 @@ CATEGORIES = [ ('entertainment', 'Entertainment'),
 class User(AbstractUser): 
     pass
 
+
 class List(models.Model):
     title           = models.CharField(max_length = 64)
     description     = models.CharField(max_length = 1000)
     img_url         = models.CharField(max_length = 128, default = '')
     starting_price  = models.DecimalField(decimal_places = 5, max_digits = 15)
+    current_price   = models.DecimalField(decimal_places = 5, max_digits = 15, default = None, null = True, blank = True)
     category        = models.CharField(max_length = 64, choices = CATEGORIES)
     user            = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "poster") 
     won_user        = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "winner", default = None, null = True, blank = True)
@@ -33,9 +35,10 @@ class Bid(models.Model):
         return f"{self.listing} {self.price} {self.user}" 
     
 class Comment(models.Model):
-    listing         = models.ForeignKey(List, on_delete = models.CASCADE)
+    listing         = models.ForeignKey(List, on_delete = models.CASCADE, related_name = 'comments', default = None, null = True, blank = True)
     user            = models.ForeignKey(User, on_delete = models.CASCADE, default = None)
     user_comment    = models.CharField(max_length = 500)
 
     def __str__(self):
-        return f"{self.listing} {self.user} {self.user_comment}"
+        return f" {self.user} {self.user_comment}"
+    
