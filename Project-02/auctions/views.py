@@ -8,7 +8,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from .models import User, List, Bid
-from .forms import ListForm, BidForm
+from .forms import ListForm, BidForm, CategoriesForm
 
 
 def index(request):
@@ -120,6 +120,24 @@ def show_listing(request, auction_id):
 
 def add_watchlist(request, auction_id):
     return
+
+def show_categories(request):
+    if request.method == "POST":
+        form = CategoriesForm(request.POST)
+        if form.is_valid():
+            category = form.cleaned_data["category"]
+        
+            listings = List.objects.filter(category = category, status = True)
+            
+            return render(request, "auctions/categories.html",{
+                "form": CategoriesForm(request.POST),
+                "auction_listings" : listings
+            })
+            
+            
+    return render(request, "auctions/categories.html",{
+        "form": CategoriesForm()
+    })
 
 def make_bid(request, auction_id):
     
