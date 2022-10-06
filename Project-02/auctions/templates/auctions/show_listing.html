@@ -46,5 +46,17 @@
             <button class = "btn btn-primary" type = "submit">Make bid</button>
          </form>
    {%endif%}
+   <br>
+   <form>
+      {{commentform}}
+      <button class = "btn btn-primary" type = "submit">Post Comment</button>
+   </form>
+   
+   <ul class = "list-group list-group-flush">
+      {%for comment in comments%}
+         <li class = "list-group-item">{{comment.user}} <br> {{comment.user_comment}}</li>
+      {%endfor%}
+   </ul>
+
 </div>
 {%endblock%}
