@@ -7,12 +7,13 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, List, Bid
-from .forms import ListForm, BidForm, CategoriesForm
+from .models import User, List, Bid, Comment
+from .forms import ListForm, BidForm, CategoriesForm, CommentForm
 
 
 def index(request):
     auction_listings = List.objects.all()
+    
     return render(request, "auctions/index.html", {
         "auction_listings":auction_listings
     })
@@ -81,6 +82,7 @@ def new_listing(request):
                            description = description, 
                            img_url = img_url,
                            starting_price = starting_price,
+                           current_price  = starting_price,
                            category = category,
                            user = user)
             listing.save()
@@ -92,6 +94,7 @@ def new_listing(request):
 @login_required(login_url = 'login')
 def show_listing(request, auction_id):
     auction     = List.objects.get(pk = auction_id)
+    comments    = Comment.objects.filter(listing = auction_id)
     max_bid     = Bid.objects.filter(listing = auction_id).aggregate(Max('price'))
     counts      = Bid.objects.filter(listing = auction_id).count() 
     
@@ -114,7 +117,9 @@ def show_listing(request, auction_id):
         "won_user"  : won_user,
         "counts"    : counts,
         "bids"      : max_bid,
-        "bidform"   : BidForm()
+        "bidform"   : BidForm(),
+        "commentform"  : CommentForm(),
+        "comments"  : comments,
     })
 
 
@@ -150,10 +155,15 @@ def make_bid(request, auction_id):
             
             max_bid     = Bid.objects.filter(listing = auction_id).aggregate(Max('price'))
             
+             
             if max_bid["price__max"] is not None:
                 if (int(price) > int(max_bid["price__max"])):
                     bid = Bid(listing = listing, user = user, price = price)
                     bid.save()
+                    
+                    listing.current_price = price
+                    listing.save()
+                    
                     messages.add_message(request, messages.SUCCESS, 'Bid success!')
                 else:
                     messages.add_message(request, messages.ERROR, 'Bid failed!')
@@ -161,6 +171,10 @@ def make_bid(request, auction_id):
                 if (int(price) > int(listing.starting_price)):
                     bid = Bid(listing = listing, user = user, price = price)
                     bid.save()
+                    
+                    listing.current_price = price
+                    listing.save()
+                    
                     messages.add_message(request, messages.SUCCESS, 'Bid success!')
                 else:
                     messages.add_message(request, messages.ERROR, 'Bid failed!')
