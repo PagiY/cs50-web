@@ -20,4 +20,7 @@ class BidForm(forms.ModelForm):
         widgets = {
             'price'             : forms.TextInput(attrs={'class': 'form-control'})
         }
+        
+class CategoriesForm(forms.Form):
+    category = forms.ChoiceField(choices = CATEGORIES, widget=forms.Select(attrs = {'class': 'form-control'}))
             
