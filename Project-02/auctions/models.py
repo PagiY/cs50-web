@@ -38,7 +38,7 @@ class Comment(models.Model):
     listing         = models.ForeignKey(List, on_delete = models.CASCADE, related_name = 'comments', default = None, null = True, blank = True)
     user            = models.ForeignKey(User, on_delete = models.CASCADE, default = None)
     user_comment    = models.CharField(max_length = 500)
-
+    
     def __str__(self):
         return f" {self.user} {self.user_comment}"
     

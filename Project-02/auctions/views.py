@@ -110,7 +110,7 @@ def show_listing(request, auction_id):
         won_user = True
     else:
         won_user = False 
-        
+    
     return render(request, "auctions/show_listing.html", {
         "auction"   : auction,
         "can_close" : can_close,
@@ -155,7 +155,6 @@ def make_bid(request, auction_id):
             
             max_bid     = Bid.objects.filter(listing = auction_id).aggregate(Max('price'))
             
-             
             if max_bid["price__max"] is not None:
                 if (int(price) > int(max_bid["price__max"])):
                     bid = Bid(listing = listing, user = user, price = price)
@@ -181,6 +180,24 @@ def make_bid(request, auction_id):
                 
             return HttpResponseRedirect(f"/show_listing/{auction_id}")
         
+def make_comment(request, auction_id):
+    
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            listing = List.objects.get(pk = auction_id)
+            user    = request.user 
+            user_comment = form.cleaned_data["user_comment"]
+            
+            comment = Comment(
+                listing = listing,
+                user = user,
+                user_comment = user_comment
+            )
+            
+            comment.save()
+            
+    return HttpResponseRedirect(f"/show_listing/{auction_id}")
 
 def close_auction(request, auction_id):
     auction     = List.objects.get(pk = auction_id)
