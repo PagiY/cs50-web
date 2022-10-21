@@ -8,3 +8,4 @@ Built a basic frontend for Google Search, Google Image Search, and Google Advanc
 Developed a basic Wikipedia-like encyclopedia which can allow users to enter and edit their own wiki entry using Markdown.  
 
 ## 💱Project-02 (Commerce)
+Created a basic commerce web application like e-bay where users can login, register, bid, and comment.
