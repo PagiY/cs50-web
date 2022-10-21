@@ -47,7 +47,8 @@
          </form>
    {%endif%}
    <br>
-   <form>
+   <form action = "{%url 'make_comment' auction.id%}" method = "post">
+      {% csrf_token %}
       {{commentform}}
       <button class = "btn btn-primary" type = "submit">Post Comment</button>
    </form>
