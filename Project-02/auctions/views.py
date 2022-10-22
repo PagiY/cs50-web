@@ -201,14 +201,16 @@ def make_comment(request, auction_id):
 
 def close_auction(request, auction_id):
     auction          = List.objects.get(pk = auction_id)
-    auction.status   = False 
-    filt_max_bid     = Bid.objects.filter(listing = auction_id)
-    if(list(filt_max_bid)):
-        filt_max_bid.annotate(max_value = Max('price')).order_by('-max_value')[0]
-        auction.won_user = filt_max_bid.user
+    auction.status   = False
+    max_bid     = Bid.objects.filter(listing = auction_id)
+
+    if not max_bid:
+        auction.won_user = None
     else:
-        messages.add_message(request, 'Bid closed without winner.')
-        
+        won_user = max_bid.annotate(max_value = Max('price')).order_by('-max_value')[0]
+        auction.won_user = won_user.user
+    
+
     auction.save()
     
 
