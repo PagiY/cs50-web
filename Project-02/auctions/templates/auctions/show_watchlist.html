@@ -1,0 +1,21 @@
+{% extends "auctions/layout.html"%}
+
+{%block body%}
+    <div class = "card-group">
+        {%for auction in auction_listings%}
+            {%if auction.listing.status == True%}
+                <div class = "card">
+                    <img src = "{{auction.listing.img_url}}" class = "card-img-top" alt = "{{auction.listing.title}}" width = '100' height = '300'>
+                    <div class = "card-body">
+                        <h5 class = "card-title">{{ auction.listing.title }}</h5>
+                        <p class = "card-text">{{ auction.listing.description }}</p>
+                        <p class = "card-text">Current Price: {{ auction.listing.current_price }}</p>
+                        <a href = "{% url 'show_listing' auction.listing.id %}"> Show Auction</a>
+                    </div>
+                </div>
+            {%endif%}
+        {%endfor%}
+        
+    </div>
+
+{%endblock%}

@@ -5,8 +5,15 @@
    <img src = "{{auction.img_url}}">
    
    <br>
-   <a href = "">Add to watchlist</a>
-
+   {%if watched == False%}
+   <form action = "{%url 'add_watchlist' auction.id%}" method = "post">
+      {%csrf_token%}
+      <button class = "btn btn-primary" type = "submit">Add to watchlist</button>
+   </form>
+   {%else%}
+      <a href = "{%url 'remove_watchlist' auction.id %}">Remove</a>
+   {%endif%}
+   
    {%if can_close%}
       {%if auction.status == True%}
          <a href = "{%url 'close_auction' auction.id%}">Close auction</a>
