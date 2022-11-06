@@ -7,13 +7,13 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, List, Bid, Comment
-from .forms import ListForm, BidForm, CategoriesForm, CommentForm
+from .models import User, List, Bid, Comment, Watchlist
+from .forms import ListForm, BidForm, CategoriesForm, CommentForm, WatchlistForm
 
 
 def index(request):
     auction_listings = List.objects.all()
-    
+
     return render(request, "auctions/index.html", {
         "auction_listings":auction_listings
     })
@@ -91,12 +91,25 @@ def new_listing(request):
         "form": ListForm()
     })
 
+def show_watchlist(request):
+    listings = Watchlist.objects.filter(user = request.user)
+    
+    return render(request, 'auctions/show_watchlist.html',{
+        "auction_listings":listings
+    })
+    
 @login_required(login_url = 'login')
 def show_listing(request, auction_id):
     auction     = List.objects.get(pk = auction_id)
     comments    = Comment.objects.filter(listing = auction_id)
     max_bid     = Bid.objects.filter(listing = auction_id).aggregate(Max('price'))
     counts      = Bid.objects.filter(listing = auction_id).count() 
+    watchlist     = Watchlist.objects.filter(listing = auction_id, user = request.user)
+    
+    if len(watchlist) > 0:
+        watched = True 
+    else:
+        watched = False 
     
     #if the user is the one who posted this listing, then they have the ability to
     #close the auction
@@ -120,18 +133,41 @@ def show_listing(request, auction_id):
         "bidform"   : BidForm(),
         "commentform"  : CommentForm(),
         "comments"  : comments,
+        "watched"   : watched
     })
 
 
 def add_watchlist(request, auction_id):
-    return
+    if request.method == "POST":
+        form = WatchlistForm(request.POST)
+        
+        if form.is_valid():
+            listing = List.objects.get(pk = auction_id)
+            user    = request.user 
+            
+            watchlist = Watchlist(
+                listing = listing,
+                user    = user
+            )
+            
+            watchlist.save()
+            
+    return HttpResponseRedirect(f"/show_listing/{auction_id}")
+
+def remove_watchlist(request, auction_id):
+    watchlist = Watchlist.objects.filter(listing = auction_id, user = request.user)
+    
+    watchlist.delete()
+    
+    return HttpResponseRedirect(f"/show_listing/{auction_id}")
+
+
 
 def show_categories(request):
     if request.method == "POST":
         form = CategoriesForm(request.POST)
         if form.is_valid():
             category = form.cleaned_data["category"]
-        
             listings = List.objects.filter(category = category, status = True)
             
             return render(request, "auctions/categories.html",{

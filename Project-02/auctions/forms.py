@@ -1,5 +1,5 @@
 from django import forms 
-from auctions.models import List, Bid, Comment, CATEGORIES
+from auctions.models import List, Bid, Comment, Watchlist, CATEGORIES
 
 class ListForm(forms.ModelForm):
     class Meta:
@@ -33,4 +33,8 @@ class CommentForm(forms.ModelForm):
         }
         widgets = {
             'user_comment'             : forms.TextInput(attrs={'class': 'form-control'})
-        }  
+        }
+        
+class WatchlistForm(forms.Form):
+    class Meta:
+        model = Watchlist

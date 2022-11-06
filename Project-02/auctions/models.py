@@ -11,7 +11,6 @@ CATEGORIES = [ ('entertainment', 'Entertainment'),
 class User(AbstractUser): 
     pass
 
-
 class List(models.Model):
     title           = models.CharField(max_length = 64)
     description     = models.CharField(max_length = 1000)
@@ -41,4 +40,11 @@ class Comment(models.Model):
     
     def __str__(self):
         return f" {self.user} {self.user_comment}"
+    
+class Watchlist(models.Model):
+    listing         = models.ForeignKey(List, on_delete = models.CASCADE, related_name = 'watchlist', default = None, null = True)
+    user            = models.ForeignKey(User, on_delete = models.CASCADE, default = None)
+    
+    def __str__(self):
+        return f" {self.user} {self.listing}"
     
