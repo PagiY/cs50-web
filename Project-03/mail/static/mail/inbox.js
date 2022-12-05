@@ -55,5 +55,14 @@ function load_mailbox(mailbox) {
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 
+  let route = '/emails/' + mailbox
+  fetch(route)
+  .then(response => response.json())
+  .then(emails => {
+    // Print emails
+    console.log(emails);
+
+    // ... do something else with emails ...
+  });
   
 }
