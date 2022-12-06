@@ -44,8 +44,7 @@ function compose_email() {
     })
     .then(response => response.json())
     .then(result => {
-      console.log(result)
-      document.querySelector('#alerts').innerHTML= 'alerted';
+      document.querySelector('#alerts').innerHTML= result.message;
       load_mailbox('sent');
     });
 
@@ -271,7 +270,7 @@ function reply_email(id){
     })
     .then(response => response.json())
     .then(result => {
-        document.querySelector('#alerts').innerHTML= 'alerted';
+        document.querySelector('#alerts').innerHTML= result.message;
         load_mailbox('sent');
     });
 
