@@ -59,7 +59,7 @@ function load_mailbox(mailbox) {
       if(!email.archived || mailbox === 'inbox'){
         if(email.read){
           element.innerHTML += 
-          ` <a id = ${email.id} class = "list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+          ` <a id = ${email.id} class = "list-group-item list-group-item-action list-group-item-dark d-flex justify-content-between align-items-center">
             ${email.sender}
             <p>${email.subject}</p>
             <p class = "text-muted">${email.timestamp}</p>
@@ -68,7 +68,7 @@ function load_mailbox(mailbox) {
         else{
           element.innerHTML += 
           `<a id = ${email.id} class = "list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-            <b>${email.sender}</b>
+            ${email.sender}
             <p>${email.subject}</p>
             <p class = "text-muted">${email.timestamp}</p>
           </a>`
@@ -78,7 +78,7 @@ function load_mailbox(mailbox) {
       else{
         if(email.read){
           element.innerHTML += 
-          ` <a id = ${email.id} class = "list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+          ` <a id = ${email.id} class = "list-group-item list-group-item-action list-group-item-dark d-flex justify-content-between align-items-center">
             ${email.sender}
             <p>${email.subject}</p>
             <p class = "text-muted">${email.timestamp}</p>
@@ -87,7 +87,7 @@ function load_mailbox(mailbox) {
         else{
           element.innerHTML += 
           `<a id = ${email.id} class = "list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-            <b>${email.sender}</b>
+            ${email.sender}
             <p>${email.subject}</p>
             <p class = "text-muted">${email.timestamp}</p>
           </a>`
