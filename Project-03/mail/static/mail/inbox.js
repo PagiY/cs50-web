@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // By default, load the inbox
   load_mailbox('inbox');
+
 });
 
 function compose_email() {
@@ -22,33 +23,13 @@ function compose_email() {
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
   
+  //Prevent default behavior of submit
   document.getElementById("compose-form").addEventListener("submit", function(event){
     event.preventDefault()
   }, true);
 
-  document.querySelector('#send-email').onclick = (e) => {
-    
-    e.preventDefault();
-
-    let recipients = document.querySelector('#compose-recipients').value;
-    let subject = document.querySelector('#compose-subject').value;
-    let body = document.querySelector('#compose-body').value;
-
-    fetch('/emails', {
-      method: 'POST',
-      body: JSON.stringify({
-          recipients: recipients,
-          subject: subject,
-          body: body
-      })
-    })
-    .then(response => response.json())
-    .then(result => {
-      document.querySelector('#alerts').innerHTML= result.message;
-      load_mailbox('sent');
-    });
-
-  }
+  //if send email button is clicked, send an email
+  document.querySelector('#send-email').onclick = () => {send_email();}
 
 }
 
@@ -61,6 +42,7 @@ function load_mailbox(mailbox) {
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 
+  //create a div element for containing mails
   const element = document.createElement('div');
   element.classList.add('list-group')
 
@@ -92,7 +74,7 @@ function load_mailbox(mailbox) {
           </a>`
         }
       }
-      //show everything else if not inbox
+      //show everything else if mailbox is not inbox
       else{
         if(email.read){
           element.innerHTML += 
@@ -111,7 +93,6 @@ function load_mailbox(mailbox) {
           </a>`
         }
       }
-      
       
     })
   });
@@ -238,6 +219,9 @@ function reply_email(id){
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
 
+  //clear body first
+  document.querySelector('#compose-body').value = '';
+
   let route = '/emails/' + id
   fetch(route)
   .then(response => response.json())
@@ -254,9 +238,12 @@ function reply_email(id){
     event.preventDefault()
   }, true);
 
-  document.querySelector('#send-email').onclick = () => {
-    
-    let recipients = document.querySelector('#compose-recipients').value;
+  document.querySelector('#send-email').onclick = () => {send_email();}
+
+}
+
+function send_email(){
+  let recipients = document.querySelector('#compose-recipients').value;
     let subject = document.querySelector('#compose-subject').value;
     let body = document.querySelector('#compose-body').value;
 
@@ -270,10 +257,7 @@ function reply_email(id){
     })
     .then(response => response.json())
     .then(result => {
-        document.querySelector('#alerts').innerHTML= result.message;
+        document.querySelector('#alert-content').innerHTML= result.message;
         load_mailbox('sent');
     });
-
-  }
-
 }
