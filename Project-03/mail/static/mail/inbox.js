@@ -257,7 +257,8 @@ function send_email(){
     })
     .then(response => response.json())
     .then(result => {
-        document.querySelector('#alert-content').innerHTML= result.message;
+        //document.querySelector('#alert-content').innerHTML= result.message;
+        alert(result.message);
         load_mailbox('sent');
     });
 }
