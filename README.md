@@ -9,3 +9,6 @@ Developed a basic Wikipedia-like encyclopedia which can allow users to enter and
 
 ## 💱Project-02 (Commerce)
 Created a basic commerce web application like e-bay where users can login, register, bid, and comment.
+
+## 💌 Project-03 (Mail)
+Basic frontend for sending and receiving emails through an API.
