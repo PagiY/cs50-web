@@ -8,8 +8,11 @@ from .models import User, Post
 from .forms import PostForm 
 
 def index(request):
+    all_posts = Post.objects.all().order_by('-timestamp')
+        
     return render(request, "network/index.html", {
-        "form": PostForm()
+        "form": PostForm(),
+        "all_posts": all_posts
     })
 
 
@@ -68,6 +71,7 @@ def post(request):
     '''
         Saves user text and user name to Post model.
     '''
+    print(request.method)
     if request.method == "POST":
         form = PostForm(request.POST)
         if form.is_valid():
@@ -76,7 +80,6 @@ def post(request):
             new_post = Post(user = user, 
                             text = text)
             new_post.save()
-             
-    return render(request, "network/index.html", {
-        "form": PostForm(),
-    })
+        
+    return HttpResponseRedirect(f"/")
+
