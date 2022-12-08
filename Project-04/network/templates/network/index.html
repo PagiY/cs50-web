@@ -1,5 +1,20 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-    TODO
+    
+    {% if user.is_authenticated %}
+    <div id = "form-post">
+        <form action = "{%url 'post' %}" method = "post">
+            {%csrf_token%}
+            <label for = "id_text"><b>New Post</b></label>
+            {{form}}
+            <input type="submit" value = "Post" class="btn btn-primary" id="post"/>
+        </form>
+    </div>
+    {% endif %}
+
+    <div id = "all-posts">
+        <p>hi</p>
+    </div>
+
 {% endblock %}
