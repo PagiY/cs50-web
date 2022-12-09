@@ -1,15 +1,16 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, Post
+from .models import User, Post, Likes
 from .forms import PostForm 
 
 def index(request):
     all_posts = Post.objects.all().order_by('-timestamp')
-        
+    #liked_posts = Likes.objects.filter(user = request.user)
+    
     return render(request, "network/index.html", {
         "form": PostForm(),
         "all_posts": all_posts
@@ -66,20 +67,40 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+def unlike_post(request, post_id):
+    if request.method == "POST":
+        user = request.user
     
+    return HttpResponseRedirect(f"/")
+
+def like_post(request, post_id):
+    if request.method == "POST":
+        user = request.user 
+        post = Post.objects.get(id = post_id)
+        
+        post.likes+=1
+        post.user_likes.add(user)
+        
+        new_like = Likes(user = user, post = post)
+        new_like.save()
+        post.save()
+        
+    return HttpResponseRedirect(f"/")
+
 def post(request):
     '''
-        Saves user text and user name to Post model.
+        Saves new user text and user name to Post model.
     '''
-    print(request.method)
     if request.method == "POST":
         form = PostForm(request.POST)
         if form.is_valid():
             text = form.cleaned_data["text"]
             user = request.user
             new_post = Post(user = user, 
-                            text = text)
+                            text = text,
+                            likes = 0)
             new_post.save()
-        
+            
     return HttpResponseRedirect(f"/")
 

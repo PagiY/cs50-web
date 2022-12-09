@@ -1,20 +1,50 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block body %}
-    
-    {% if user.is_authenticated %}
-    <div id = "form-post">
-        <form action = "{%url 'post' %}" method = "post">
-            {%csrf_token%}
-            <label for = "id_text"><b>New Post</b></label>
-            {{form}}
-            <input type="submit" value = "Post" class="btn btn-primary" id="post"/>
-        </form>
-    </div>
-    {% endif %}
 
-    <div id = "all-posts">
-        <p>hi</p>
+    <div id = "post-page">
+        {% if user.is_authenticated %}
+        <div id = "form-post">
+            <form action = "{%url 'post' %}" method = "post">
+                {%csrf_token%}
+                <label for = "id_text"><b>New Post</b></label>
+                {{form}}
+                <input type="submit" value = "Post" class="btn btn-primary" id="post"/>
+            </form>
+        </div>
+        {% endif %}
+
+        <div id = "all-posts">
+
+            {%for post in all_posts%}
+                <div class="card mb-3">
+                    <div class="card-header bg-transparent">{{post.user}}</div>
+                        <div class="card-body text-success">
+                            <p class="card-text">{{post.text}}</p>
+                        </div>
+                    
+                    
+                    {% if user.is_authenticated %}
+                        {%if user in post.user_likes.all%}
+                            <div class="card-footer bg-transparent">
+                                <button id = "like-button" type="button" class="btn btn-primary" onclick = "unlikePost({{post.id}})">Unlike {{post.likes}}</button> 
+                            </div>
+                        {%else%}
+                            <div class="card-footer bg-transparent">
+                                <button id = "like-button" type="button" class="btn btn-primary" onclick = "likePost({{post.id}})">Like {{post.likes}}</button>
+                            </div>
+                        {%endif%}
+                    {% endif %}
+                    
+                </div>
+            {%endfor%}
+
+        </div>
     </div>
 
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'network/scripts.js' %}"></script>
 {% endblock %}

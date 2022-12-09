@@ -20,7 +20,6 @@ function getCookie(cname) {
 
 
 function likePost(post_id){
-    
 
     fetch(`like/${post_id}`, {
         method: "POST",
@@ -30,5 +29,14 @@ function likePost(post_id){
         }
     })
     .then((response) => response.json())
+    .then((data) => window.location.reload());
+
+}
+
+function unlikePost(post_id){
+
+  fetch(`unlike/${post_id}`, {
+
+  })
 
 }
