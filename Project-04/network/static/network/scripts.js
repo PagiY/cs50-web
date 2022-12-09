@@ -28,15 +28,23 @@ function likePost(post_id){
             "X-CSRFToken": getCookie("csrftoken")
         }
     })
-    .then((response) => response.json())
-    .then((data) => window.location.reload());
+    .then((data) => {
+      location.reload();
+    });
 
 }
 
 function unlikePost(post_id){
 
   fetch(`unlike/${post_id}`, {
-
+    method: "POST",
+    credentials: 'same-origin',
+    headers: {
+        "X-CSRFToken": getCookie("csrftoken")
+    }
   })
+  .then((data) => {
+    location.reload();
+  });
 
 }

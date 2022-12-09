@@ -26,15 +26,15 @@
                     
                     
                     {% if user.is_authenticated %}
-                        {%if user in post.user_likes.all%}
-                            <div class="card-footer bg-transparent">
+                        
+                        <div id = "like-buttons-content" class="card-footer bg-transparent">
+                            {%if user in post.user_likes.all%}
                                 <button id = "like-button" type="button" class="btn btn-primary" onclick = "unlikePost({{post.id}})">Unlike {{post.likes}}</button> 
-                            </div>
-                        {%else%}
-                            <div class="card-footer bg-transparent">
+                            {%else%}
                                 <button id = "like-button" type="button" class="btn btn-primary" onclick = "likePost({{post.id}})">Like {{post.likes}}</button>
-                            </div>
-                        {%endif%}
+                            {%endif%}
+                        </div>
+
                     {% endif %}
                     
                 </div>

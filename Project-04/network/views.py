@@ -71,7 +71,11 @@ def register(request):
 def unlike_post(request, post_id):
     if request.method == "POST":
         user = request.user
-    
+        post = Post.objects.get(id = post_id)
+        post.likes-=1 
+        post.user_likes.remove(user)
+        post.save()
+        
     return HttpResponseRedirect(f"/")
 
 def like_post(request, post_id):
