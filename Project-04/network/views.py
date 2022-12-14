@@ -157,3 +157,18 @@ def unfollow(request, user_id):
         user.save()
         
     return HttpResponseRedirect(f"/")
+
+def following(request):
+    
+    user = User.objects.get(id = request.user.id)
+    
+    user_follows = user.following.all()
+    
+    posts = []
+    for following in user_follows:
+        following_posts = Post.objects.filter(user = following)
+        posts.extend(following_posts)
+        
+    return render(request, "network/following.html", {
+        "posts" : posts
+    })
