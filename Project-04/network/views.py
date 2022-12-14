@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, Post, Likes
+from .models import User, Post, Like
 from .forms import PostForm 
 
 def index(request):
@@ -72,8 +72,13 @@ def unlike_post(request, post_id):
     if request.method == "POST":
         user = request.user
         post = Post.objects.get(id = post_id)
+        
+        liked = Like.objects.filter(user = user, post = post)
+        liked.delete()
+        
         post.likes-=1 
         post.user_likes.remove(user)
+        
         post.save()
         
     return HttpResponseRedirect(f"/")
@@ -86,7 +91,7 @@ def like_post(request, post_id):
         post.likes+=1
         post.user_likes.add(user)
         
-        new_like = Likes(user = user, post = post)
+        new_like = Like(user = user, post = post)
         new_like.save()
         post.save()
         
@@ -108,3 +113,47 @@ def post(request):
             
     return HttpResponseRedirect(f"/")
 
+def show_profile(request, user_id):
+    user = User.objects.get(id = user_id)
+    posts = Post.objects.filter(user = user).order_by('-timestamp')
+    
+    return render(request, "network/profile.html", {
+        "user_profile": user,
+        "posts": posts 
+    })
+    
+def follow(request, user_id):
+    if request.method == "POST":
+        
+        #user the current logged in user wants to follow
+        user_to_follow = User.objects.get(id = user_id)
+        
+        #update user following
+        user = User.objects.get(id = request.user.id)  
+        user.following.add(user_to_follow)
+        
+        #update user_to_follow followers count
+        user_to_follow.followers+=1
+        
+        user_to_follow.save()
+        user.save()
+        
+    return HttpResponseRedirect(f"/")
+
+def unfollow(request, user_id):
+    
+    if request.method == "POST":
+        #user the current logged in user wants to follow
+        user_to_follow = User.objects.get(id = user_id)
+        
+        #update user following
+        user = User.objects.get(id = request.user.id)  
+        user.following.remove(user_to_follow)
+        
+        #update user_to_follow followers count
+        user_to_follow.followers-=1
+        
+        user_to_follow.save()
+        user.save()
+        
+    return HttpResponseRedirect(f"/")
