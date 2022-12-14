@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-
+  
 })
 
 function getCookie(cname) {
@@ -21,7 +21,7 @@ function getCookie(cname) {
 
 function likePost(post_id){
 
-    fetch(`like/${post_id}`, {
+    fetch(`/like/${post_id}`, {
         method: "POST",
         credentials: 'same-origin',
         headers: {
@@ -36,7 +36,7 @@ function likePost(post_id){
 
 function unlikePost(post_id){
 
-  fetch(`unlike/${post_id}`, {
+  fetch(`/unlike/${post_id}`, {
     method: "POST",
     credentials: 'same-origin',
     headers: {
@@ -47,4 +47,32 @@ function unlikePost(post_id){
     location.reload();
   });
 
+}
+
+function follow(user_id){
+
+  fetch(`/follow/${user_id}`, {
+    method: "POST",
+    credentials: "same-origin",
+    headers:{
+      "X-CSRFToken": getCookie("csrftoken")
+    }
+  })
+  .then((data) => {
+    location.reload();
+  })
+}
+
+function unfollow(user_id){
+
+  fetch(`/unfollow/${user_id}`, {
+    method: "POST",
+    credentials: "same-origin",
+    headers:{
+      "X-CSRFToken": getCookie("csrftoken")
+    }
+  })
+  .then((data) => {
+    location.reload();
+  })
 }
