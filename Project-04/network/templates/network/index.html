@@ -19,17 +19,19 @@
 
             {%for post in all_posts%}
                 <div class="card mb-3">
-                    <div class="card-header bg-transparent">{{post.user}}</div>
-                        <div class="card-body text-success">
-                            <p class="card-text">{{post.text}}</p>
-                        </div>
-                    
+                    <div class="card-header bg-transparent">
+                        <a href = "{% url 'show_profile' post.user.id %}">{{post.user}}</a>
+                    </div>
+                    <div class="card-body text-success">
+                        <p class="card-text">{{post.text}}</p>
+                        <small class="text-muted">Edit</small>
+                    </div>
                     
                     {% if user.is_authenticated %}
                         
                         <div id = "like-buttons-content" class="card-footer bg-transparent">
                             {%if user in post.user_likes.all%}
-                                <button id = "like-button" type="button" class="btn btn-primary" onclick = "unlikePost({{post.id}})">Unlike {{post.likes}}</button> 
+                                <button id = "unlike-button" type="button" class="btn btn-primary" onclick = "unlikePost({{post.id}})">Unlike {{post.likes}}</button> 
                             {%else%}
                                 <button id = "like-button" type="button" class="btn btn-primary" onclick = "likePost({{post.id}})">Like {{post.likes}}</button>
                             {%endif%}

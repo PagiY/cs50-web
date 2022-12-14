@@ -1,0 +1,52 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{%block body%}
+    <b>{{user_profile.username}}</b>
+
+    Followers {{user_profile.followers}}
+
+    {% if user_profile.username != user.username%}
+        {% if user_profile in user.following.all %}
+            <button id = "unfollow-button" type="button" class="btn btn-primary" onclick = "unfollow({{user_profile.id}})">Unfollow</button>
+        {%else%}
+            <button id = "follow-button" type="button" class="btn btn-primary" onclick = "follow({{user_profile.id}})">Follow</button>
+        {%endif%}
+    {%endif%}
+
+
+    <div id = "all-posts">
+
+        {%for post in posts%}
+            <div class="card mb-3">
+                <div class="card-header bg-transparent">
+                    <a href = "{% url 'show_profile' post.user.id %}">{{post.user}}</a>
+                </div>
+                <div class="card-body text-success">
+                    <p class="card-text">{{post.text}}</p>
+                    <small class="text-muted">Edit</small>
+                </div>
+                
+                
+                {% if user.is_authenticated %}
+                    
+                    <div id = "like-buttons-content" class="card-footer bg-transparent">
+                        {%if user in post.user_likes.all%}
+                            <button id = "unlike-button" type="button" class="btn btn-primary" onclick = "unlikePost({{post.id}})">Unlike {{post.likes}}</button> 
+                        {%else%}
+                            <button id = "like-button" type="button" class="btn btn-primary" onclick = "likePost({{post.id}})">Like {{post.likes}}</button>
+                        {%endif%}
+                    </div>
+
+                {% endif %}
+                
+            </div>
+        {%endfor%}
+
+    </div>
+
+{%endblock%}
+
+{% block script %}
+    <script src="{% static 'network/scripts.js' %}"></script>
+{% endblock %}
