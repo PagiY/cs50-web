@@ -12,3 +12,7 @@ Created a basic commerce web application like e-bay where users can login, regis
 
 ## 💌 Project-03 (Mail)
 Basic frontend for sending and receiving emails through an API.
+
+## 📱 Project-04 (Network)
+Twitter-like social network website for making posts and following users.
+
