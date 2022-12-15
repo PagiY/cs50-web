@@ -1,12 +1,12 @@
 from django import forms 
-from network.models import Post 
+from .models import Post
 
-class PostForm(forms.ModelForm):    
+class PostForm(forms.ModelForm):
     class Meta:
-        model  = Post 
-        fields = ['text']
+        model = Post
+        fields = ["text"]
         labels = {
-            'text': ""
+            "text": ""
         }
         widgets = {
             'text' : forms.Textarea(attrs = {'class':'form-control'})
