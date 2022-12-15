@@ -2,35 +2,45 @@
 {% load static %}
 
 {% block body %}
-    <div id = "post-page">
-        {%for post in posts%}
-            <div class="card mb-3">
-                <div class="card-header bg-transparent">
-                    <a href = "{% url 'show_profile' post.user.id %}">{{post.user}}</a>
-                </div>
-                <div class="card-body text-success">
-                    <p class="card-text">{{post.text}}</p>
-                    <small class="text-muted">Edit</small>
-                </div>
+
+    <div class = "post-container">
+
+        {% for post in all_posts %}
             
-            {% if user.is_authenticated %}
+            <div class = "card">
                 
-                <div id = "like-buttons-content" class="card-footer bg-transparent">
-                    {%if user in post.user_likes.all%}
-                        <button id = "unlike-button" type="button" class="btn btn-primary" onclick = "unlikePost({{post.id}})">Unlike {{post.likes}}</button> 
-                    {%else%}
-                        <button id = "like-button" type="button" class="btn btn-primary" onclick = "likePost({{post.id}})">Like {{post.likes}}</button>
+                <div id = '{{post.id}}' class = "card-body">
+
+                    <a href = "{% url 'profile' post.user.id %}"><p class="card-title"><b>{{post.user}}</b></p></a>
+                    
+                    <div class = "post-content">
+                        <small class="card-subtitle mb-2 text-muted">{{post.timestamp}}</small>
+                        <p class="card-text">{{post.text}}</p>
+                    </div>
+                    
+                    {% if user.is_authenticated %}
+                    <div class = "post-buttons pt-2">
+                        {% if user in post.user_likes.all%}
+                            <button id = "like-post" class="card-link btn btn-primary">Unlike <span id = "like-counts" class="badge text-bg-secondary">{{post.user_likes.all.count}}</span></button>
+                        {%else%}
+                            <button id = "like-post" class="card-link btn btn-primary">Like <span id   = "like-counts" class="badge text-bg-secondary">{{post.user_likes.all.count}}</span></button>
+                        {%endif%}
+
+                        {% if post.user == user%}
+                            <button id = "edit-post" class="card-link btn btn-primary">Edit Post</button>
+                        {%endif%}   
+                    </div>
                     {%endif%}
+
                 </div>
 
-            {% endif %}
-            
             </div>
 
-        {%endfor%}
+        {% endfor %}
     </div>
+
 {% endblock %}
 
-{% block script %}
-    <script src="{% static 'network/scripts.js' %}"></script>
-{% endblock %}
+{%block script%}
+    <script src = "{% static 'network/scripts.js' %}"></script>
+{%endblock%}

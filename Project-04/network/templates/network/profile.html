@@ -1,52 +1,64 @@
 {% extends "network/layout.html" %}
 {% load static %}
 
-{%block body%}
-    <b>{{user_profile.username}}</b>
+{% block body %}
+    <h2>{{profile_user.username}}</h2>
+    <div>
+        <p>Followers {{follower_count}}</p>
+        <p>Following {{following_count}}</p>
 
-    Followers {{user_profile.followers}}
+        {% if profile_user != user %}
 
-    {% if user_profile.username != user.username%}
-        {% if user_profile in user.following.all %}
-            <button id = "unfollow-button" type="button" class="btn btn-primary" onclick = "unfollow({{user_profile.id}})">Unfollow</button>
-        {%else%}
-            <button id = "follow-button" type="button" class="btn btn-primary" onclick = "follow({{user_profile.id}})">Follow</button>
-        {%endif%}
-    {%endif%}
+            <form action = "{% url 'profile' profile_user.id %}" method = "post">
+                {%csrf_token%} 
+                {%if following%}
+                    <button type = "submit" id = "follow-btn" class = "btn btn-primary"> Unfollow </button>
+                {%else%}
+                    <button type = "submit" id = "follow-btn" class = "btn btn-primary"> Follow </button>
+                {%endif%}
+            </form>
 
-
-    <div id = "all-posts">
-
-        {%for post in posts%}
-            <div class="card mb-3">
-                <div class="card-header bg-transparent">
-                    <a href = "{% url 'show_profile' post.user.id %}">{{post.user}}</a>
-                </div>
-                <div class="card-body text-success">
-                    <p class="card-text">{{post.text}}</p>
-                    <small class="text-muted">Edit</small>
-                </div>
-                
-                
-                {% if user.is_authenticated %}
-                    
-                    <div id = "like-buttons-content" class="card-footer bg-transparent">
-                        {%if user in post.user_likes.all%}
-                            <button id = "unlike-button" type="button" class="btn btn-primary" onclick = "unlikePost({{post.id}})">Unlike {{post.likes}}</button> 
-                        {%else%}
-                            <button id = "like-button" type="button" class="btn btn-primary" onclick = "likePost({{post.id}})">Like {{post.likes}}</button>
-                        {%endif%}
-                    </div>
-
-                {% endif %}
-                
-            </div>
-        {%endfor%}
+        {% endif %}
 
     </div>
 
-{%endblock%}
+    <div class = "post-container">
+        {% for post in all_posts %}
+            
+            <div class = "card">
+                
+                <div id = '{{post.id}}' class = "card-body">
 
-{% block script %}
-    <script src="{% static 'network/scripts.js' %}"></script>
+                    <a href = "{% url 'profile' post.user.id %}"><p class="card-title"><b>{{post.user}}</b></p></a>
+                    
+                    <div class = "post-content">
+                        <small class="card-subtitle mb-2 text-muted">{{post.timestamp}}</small>
+                        <p class="card-text">{{post.text}}</p>
+                    </div>
+
+                    {% if user.is_authenticated %}
+                    <div class = "post-buttons pt-2">
+                        {% if user in post.user_likes.all%}
+                            <button id = "like-post" class="card-link btn btn-primary">Unlike <span id = "like-counts" class="badge text-bg-secondary">{{post.user_likes.all.count}}</span></button>
+                        {%else%}
+                            <button id = "like-post" class="card-link btn btn-primary">Like <span id   = "like-counts" class="badge text-bg-secondary">{{post.user_likes.all.count}}</span></button>
+                        {%endif%}
+
+                        {% if post.user == user%}
+                            <button id = "edit-post" class="card-link btn btn-primary">Edit Post</button>
+                        {%endif%}   
+                    </div>
+                    {%endif%}
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+    </div>
+
 {% endblock %}
+
+{%block script%}
+    <script src = "{% static 'network/scripts.js' %}"></script>
+{%endblock%}

@@ -3,50 +3,82 @@
 
 {% block body %}
 
-    <div id = "post-page">
-        {% if user.is_authenticated %}
-        <div id = "form-post">
-            <form action = "{%url 'post' %}" method = "post">
-                {%csrf_token%}
-                <label for = "id_text"><b>New Post</b></label>
-                {{form}}
-                <input type="submit" value = "Post" class="btn btn-primary" id="post"/>
-            </form>
-        </div>
-        {% endif %}
+    {% if user.is_authenticated %}
+        <form action = "{% url 'post' %}" method = "post">
+            {% csrf_token %}
+            <label for = "id_text"><b>New Post</b></label>
+            {{form}}
+            <input type = "submit" value = "Post" class="submit-btn btn btn-primary"/>
+        </form>
+    {%endif%}
 
-        <div id = "all-posts">
+    <div class = "post-container">
+        {% for post in all_posts %}
+            
+            <div class = "card">
+                
+                <div id = '{{post.id}}' class = "card-body">
 
-            {%for post in all_posts%}
-                <div class="card mb-3">
-                    <div class="card-header bg-transparent">
-                        <a href = "{% url 'show_profile' post.user.id %}">{{post.user}}</a>
-                    </div>
-                    <div class="card-body text-success">
-                        <p class="card-text">{{post.text}}</p>
-                        <small class="text-muted">Edit</small>
-                    </div>
-                    
                     {% if user.is_authenticated %}
-                        
-                        <div id = "like-buttons-content" class="card-footer bg-transparent">
-                            {%if user in post.user_likes.all%}
-                                <button id = "unlike-button" type="button" class="btn btn-primary" onclick = "unlikePost({{post.id}})">Unlike {{post.likes}}</button> 
+                        <a href = "{% url 'profile' post.user.id %}"><p class="card-title"><b>{{post.user}}</b></p></a>
+                    {%else%}
+                        <a href = "{% url 'login' %}"><p class="card-title"><b>{{post.user}}</b></p></a>
+                    {%endif%}
+
+                    <div class = "post-content">
+                        <small class="card-subtitle mb-2 text-muted">{{post.timestamp}}</small>
+                        <p class="card-text">{{post.text}}</p>
+                    </div>
+
+                    {% if user.is_authenticated %}
+                        <div class = "post-buttons pt-2">
+                            {% if user in post.user_likes.all%}
+                                <button id = "like-post" class="card-link btn btn-primary">Unlike <span id = "like-counts" class="badge text-bg-secondary">{{post.user_likes.all.count}}</span></button>
                             {%else%}
-                                <button id = "like-button" type="button" class="btn btn-primary" onclick = "likePost({{post.id}})">Like {{post.likes}}</button>
+                                <button id = "like-post" class="card-link btn btn-primary">Like <span id   = "like-counts" class="badge text-bg-secondary">{{post.user_likes.all.count}}</span></button>
                             {%endif%}
+
+                            {% if post.user == user%}
+                                <button id = "edit-post" class="card-link btn btn-primary">Edit Post</button>
+                            {%endif%}   
                         </div>
+                    {%else%}
+                        <div class = "post-buttons pt-2">
+                            <small>Likes {{post.user_likes.all.count}}</small>
+                        </div>
+                    {%endif%}
 
-                    {% endif %}
-                    
                 </div>
-            {%endfor%}
 
-        </div>
+            </div>
+
+        {% endfor %}
     </div>
 
+    <nav aria-label="Page navigation example">
+        
+        <ul class="pagination justify-content-center">
+          
+            <li class="page-item disabled">
+            <a class="page-link">Previous</a>
+          </li>
+          
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+          
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+
+          <li class="page-item">
+            <a class="page-link" href="#">Next</a>
+          </li>
+
+        </ul>
+
+    </nav>
+
 {% endblock %}
 
-{% block script %}
-    <script src="{% static 'network/scripts.js' %}"></script>
-{% endblock %}
+{%block script%}
+    <script src = "{% static 'network/scripts.js' %}"></script>
+{%endblock%}
