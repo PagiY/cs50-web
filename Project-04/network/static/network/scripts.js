@@ -1,8 +1,26 @@
-document.addEventListener('DOMContentLoaded', function() {
+window.addEventListener('DOMContentLoaded', (event) => { load() });
 
+function load(){
+  let postBtns = document.querySelectorAll('.post-buttons')
+  
+  postBtns.forEach((btn) => {
 
-})
+    let editBtn = btn.querySelector('#edit-post')
+    if(editBtn !== null){
+      btn.querySelector('#edit-post').addEventListener('click', () => {
+        editPost(btn.parentNode.id)
+      })
+    }
 
+    let likeBtn = btn.querySelector('#like-post')
+    if(likeBtn !== null){
+      btn.querySelector('#like-post').addEventListener('click', () => {
+        likePost(btn.parentNode.id)
+      })
+    }
+
+  })
+}
 
 function getCookie(cname) {
     let name = cname + "=";
@@ -20,90 +38,94 @@ function getCookie(cname) {
     return "";
 }
 
-function editPost(post_id, post_text){
-  let id = post_id.toString();
-  let post = document.getElementById(id);
+function editPost(post_id){
+  let post = document.getElementById(post_id);
+  let text = post.querySelector('.card-text').innerHTML
+  
+  let prevContent = post.innerHTML;
 
-  post.innerHTML = `
-      <textarea id = "edit-post">${post_text}</textarea>
-      <input type="submit" value = "Post" class="btn btn-primary" id="post" onclick = 'edit(${post_id})'/>
-      <button class="btn btn-primary" onclick = 'location.reload()' >Cancel</button>
-    
+  post.querySelector('.post-content').innerHTML = `
+    <textarea id = "editing-post" class="form-control">${text}</textarea>
   `
+
+  post.querySelector('.post-buttons').innerHTML = `
+    <button id = "finalize-button" class = "btn btn-primary">Post</button>
+    <button id = "cancel-button"   class = "btn btn-primary">Cancel</button>
+  `
+  
+  post.querySelector('#finalize-button').addEventListener('click', () => {
+
+    let new_text = document.querySelector('#editing-post').value
+
+    
+    fetch(`/post`, {
+      method: "PUT",
+      credentials: 'same-origin',
+      headers: {
+        "X-CSRFToken": getCookie("csrftoken")
+      },
+      body: JSON.stringify({
+        post_id: post_id,
+        text: new_text,
+        type: "edit"
+      })
+    })
+    .then(response => {
+      if(response.status == 200){
+        post.innerHTML = prevContent;
+        post.querySelector('.card-text').innerHTML = new_text;
+        load();
+      }
+    })
+    
+  })
+
+  post.querySelector('#cancel-button').addEventListener('click', () => {
+    post.innerHTML = prevContent;
+    load();
+  })
+
 }
 
-function edit(post_id){
-  let value = document.querySelector('#edit-post').value
-  
-  fetch(`/edit/${post_id}`, {
+function likePost(post_id){
+  let post = document.getElementById(post_id);
+  let content = post.querySelector('#like-post').innerHTML;
+  let counts = parseInt(post.querySelector('#like-counts').innerHTML);
+
+  let element = document.createElement('span')
+  element.setAttribute('class', "badge text-bg-secondary")
+  element.setAttribute('id', "like-counts")
+
+  fetch(`/post`, {
     method: "PUT",
     credentials: 'same-origin',
     headers: {
       "X-CSRFToken": getCookie("csrftoken")
     },
     body: JSON.stringify({
-      text: value
+      post_id: post_id,
+      type: "like"
     })
   })
-  .then((data) => {
-    location.reload();
-  })
-}
+  .then(response => {
+    if(response.status == 200){
+      post.querySelector('#like-post').innerHTML = ``;
+      if(content.includes('Like')){
+        counts+=1;
+        element.appendChild(document.createTextNode(counts.toString()));
+        post.querySelector('#like-post').append(document.createTextNode(`Unlike`))
+        post.querySelector('#like-post').append(element)
 
-function likePost(post_id){
-
-    fetch(`/like/${post_id}`, {
-        method: "POST",
-        credentials: 'same-origin',
-        headers: {
-            "X-CSRFToken": getCookie("csrftoken")
-        }
-    })
-    .then((data) => {
-      location.reload();
-    });
-
-}
-
-function unlikePost(post_id){
-
-  fetch(`/unlike/${post_id}`, {
-    method: "POST",
-    credentials: 'same-origin',
-    headers: {
-        "X-CSRFToken": getCookie("csrftoken")
+      }
+      else{
+        counts-=1;
+        element.appendChild(document.createTextNode(counts.toString()));
+        post.querySelector('#like-post').append(document.createTextNode(`Like`))
+        post.querySelector('#like-post').append(element)
+        
+      }
     }
   })
-  .then((data) => {
-    location.reload();
-  });
 
 }
 
-function follow(user_id){
-
-  fetch(`/follow/${user_id}`, {
-    method: "POST",
-    credentials: "same-origin",
-    headers:{
-      "X-CSRFToken": getCookie("csrftoken")
-    }
-  })
-  .then((data) => {
-    location.reload();
-  })
-}
-
-function unfollow(user_id){
-
-  fetch(`/unfollow/${user_id}`, {
-    method: "POST",
-    credentials: "same-origin",
-    headers:{
-      "X-CSRFToken": getCookie("csrftoken")
-    }
-  })
-  .then((data) => {
-    location.reload();
-  })
-}
