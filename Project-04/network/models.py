@@ -1,22 +1,21 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from datetime import datetime
 
 class User(AbstractUser):
-    followers = models.PositiveIntegerField(default = 0)
-    following = models.ManyToManyField("User", blank = True)   
+    followers = models.ManyToManyField("User", blank=True, related_name = "follower+")
+    following = models.ManyToManyField("User", blank=True, related_name = "following+")
 
 class Post(models.Model):
-    id   = models.AutoField(primary_key=True)
-    user = models.ForeignKey("User", on_delete = models.CASCADE, related_name="poster")
+    id   = models.AutoField(primary_key = True)
+    user = models.ForeignKey("User", on_delete = models.CASCADE, related_name = "poster")
     text = models.CharField(max_length = 128)
-    timestamp = models.DateTimeField(auto_now_add=True)
-    likes = models.PositiveIntegerField(default = 0)
-    user_likes = models.ManyToManyField(User, blank = True)
+    timestamp = models.DateTimeField(auto_now_add = True)
+    user_likes = models.ManyToManyField("User", blank = True, related_name="likes")
     
-    def __str__(self):
-        return f"{self.id} | {self.user} posted: '{self.text}' at {self.timestamp}"
-     
-class Like(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name = 'liked_post')
+    # def update_time(self):
+    #     self.timestamp = datetime.now()
+    
+    
+
