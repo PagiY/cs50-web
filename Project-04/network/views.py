@@ -1,15 +1,16 @@
+import json
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, Post, Like
+from .models import User, Post
 from .forms import PostForm 
 
 def index(request):
+    
     all_posts = Post.objects.all().order_by('-timestamp')
-    #liked_posts = Likes.objects.filter(user = request.user)
     
     return render(request, "network/index.html", {
         "form": PostForm(),
@@ -68,95 +69,47 @@ def register(request):
     else:
         return render(request, "network/register.html")
 
-def unlike_post(request, post_id):
-    if request.method == "POST":
-        user = request.user
-        post = Post.objects.get(id = post_id)
-        
-        liked = Like.objects.filter(user = user, post = post)
-        liked.delete()
-        
-        post.likes-=1 
-        post.user_likes.remove(user)
-        
-        post.save()
-        
-    return HttpResponseRedirect(f"/")
-
-def like_post(request, post_id):
-    if request.method == "POST":
-        user = request.user 
-        post = Post.objects.get(id = post_id)
-        
-        post.likes+=1
-        post.user_likes.add(user)
-        
-        new_like = Like(user = user, post = post)
-        new_like.save()
-        post.save()
-        
-    return HttpResponseRedirect(f"/")
-
 def post(request):
-    '''
-        Saves new user text and user name to Post model.
-    '''
     if request.method == "POST":
         form = PostForm(request.POST)
         if form.is_valid():
             text = form.cleaned_data["text"]
             user = request.user
             new_post = Post(user = user, 
-                            text = text,
-                            likes = 0)
+                            text = text)
             new_post.save()
+        return HttpResponseRedirect(reverse("index"))
+    
+    elif request.method == "PUT":
+        
+        
+        data = json.loads(request.body)
+        
+        if data["type"] == "edit":
+            post = Post.objects.get(id = data["post_id"])
+            post.text = data["text"]
+            post.save()
             
-    return HttpResponseRedirect(f"/")
+            return HttpResponseRedirect(reverse("index"))
+        
+        elif data["type"] == "like":
+            
+            post = Post.objects.get(id = data["post_id"])
+            user = request.user 
+            if user in post.user_likes.all():
+                post.user_likes.remove(user)
+            else:
+                post.user_likes.add(user)
+                
+            post.save()
+            
+            return HttpResponseRedirect(reverse("index"))
+    else:
+        
+        return JsonResponse({
+            "error": "Invalid HTTP request."
+        }, status = 400)
 
-def show_profile(request, user_id):
-    user = User.objects.get(id = user_id)
-    posts = Post.objects.filter(user = user).order_by('-timestamp')
-    
-    return render(request, "network/profile.html", {
-        "user_profile": user,
-        "posts": posts 
-    })
-    
-def follow(request, user_id):
-    if request.method == "POST":
-        
-        #user the current logged in user wants to follow
-        user_to_follow = User.objects.get(id = user_id)
-        
-        #update user following
-        user = User.objects.get(id = request.user.id)  
-        user.following.add(user_to_follow)
-        
-        #update user_to_follow followers count
-        user_to_follow.followers+=1
-        
-        user_to_follow.save()
-        user.save()
-        
-    return HttpResponseRedirect(f"/")
-
-def unfollow(request, user_id):
-    
-    if request.method == "POST":
-        #user the current logged in user wants to follow
-        user_to_follow = User.objects.get(id = user_id)
-        
-        #update user following
-        user = User.objects.get(id = request.user.id)  
-        user.following.remove(user_to_follow)
-        
-        #update user_to_follow followers count
-        user_to_follow.followers-=1
-        
-        user_to_follow.save()
-        user.save()
-        
-    return HttpResponseRedirect(f"/")
 
 def following(request):
     
@@ -170,5 +123,53 @@ def following(request):
         posts.extend(following_posts)
         
     return render(request, "network/following.html", {
-        "posts" : posts
+        "all_posts" : posts
     })
+    
+
+def profile(request, id):
+    
+    if request.method == "GET":
+        
+        user_profile = User.objects.get(id = id)
+        
+        followers = user_profile.followers.all()
+        if request.user in followers:
+            following = True 
+        else:
+            following = False 
+        
+        follower_count = followers.count()
+        following_count = user_profile.following.all().count()
+        
+        posts = Post.objects.filter(user = user_profile).order_by("-timestamp")
+        
+        return render(request, "network/profile.html",{
+            "profile_user": user_profile,
+            "all_posts"   : posts,
+            "following"   : following,
+            "follower_count":follower_count,
+            "following_count": following_count
+        })
+        
+    elif request.method == "POST":
+        
+        user_profile = User.objects.get(id = id)
+        user = User.objects.get(id = request.user.id)
+        
+        if request.user in user_profile.followers.all():
+            user_profile.followers.remove(user)
+            user.following.remove(user_profile)
+        else:
+            user_profile.followers.add(user)
+            user.following.add(user_profile)
+            
+        user_profile.save()
+        user.save() 
+            
+        return HttpResponseRedirect(reverse("profile", kwargs={'id' : id}))
+    else:
+        return JsonResponse({
+            "error": "Invalid HTTP request."
+        }, status = 400)
+    
