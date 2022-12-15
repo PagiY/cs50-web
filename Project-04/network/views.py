@@ -4,6 +4,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
+from django.core.paginator import Paginator
 
 from .models import User, Post
 from .forms import PostForm 
@@ -11,10 +12,13 @@ from .forms import PostForm
 def index(request):
     
     all_posts = Post.objects.all().order_by('-timestamp')
+    paginator = Paginator(all_posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     
     return render(request, "network/index.html", {
         "form": PostForm(),
-        "all_posts": all_posts
+        "all_posts": page_obj,
     })
 
 
@@ -121,9 +125,13 @@ def following(request):
     for following in user_follows:
         following_posts = Post.objects.filter(user = following)
         posts.extend(following_posts)
-        
+    
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
     return render(request, "network/following.html", {
-        "all_posts" : posts
+        "all_posts" : page_obj
     })
     
 
@@ -143,10 +151,13 @@ def profile(request, id):
         following_count = user_profile.following.all().count()
         
         posts = Post.objects.filter(user = user_profile).order_by("-timestamp")
-        
+        paginator = Paginator(posts, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+    
         return render(request, "network/profile.html",{
             "profile_user": user_profile,
-            "all_posts"   : posts,
+            "all_posts"   : page_obj,
             "following"   : following,
             "follower_count":follower_count,
             "following_count": following_count
